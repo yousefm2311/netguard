@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-
-import 'core/routes/app_routes.dart';
-import 'core/theme/app_theme.dart';
-import 'core/translations/app_translations.dart';
-import 'core/bindings/app_bindings.dart';
+import 'app/routes/app_pages.dart';
+import 'app/themes/app_theme.dart';
+import 'app/translations/app_translations.dart';
+import 'app/bindings/initial_binding.dart';
+import 'core/storage/storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
   
+  final storageService = await StorageService().init();
+  Get.put(storageService, permanent: true);
+
   runApp(const SmartNetApp());
 }
 
@@ -19,18 +20,25 @@ class SmartNetApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final storage = Get.find<StorageService>();
+    final isDark = storage.isDarkMode();
+    final lang = storage.getLanguage();
+
     return GetMaterialApp(
       title: 'SmartNet Control',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Will implement a toggle later
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       translations: AppTranslations(),
-      locale: const Locale('en', 'US'), // Default locale
+      locale: Locale(lang),
       fallbackLocale: const Locale('en', 'US'),
-      initialBinding: AppBindings(),
-      initialRoute: AppRoutes.login,
-      getPages: AppRoutes.pages,
+      initialBinding: InitialBinding(),
+      // initialRoute: AppRoutes.login, // Will be set in Phase 3
+      getPages: AppPages.pages,
+      home: const Scaffold(
+        body: Center(child: Text('SmartNet Architecture V3 Setup Complete')),
+      ),
     );
   }
 }
