@@ -1,44 +1,39 @@
 import 'package:get/get.dart';
-
-import '../../domain/entities/router_profile.dart';
-import '../../domain/repositories/router_profile_repository.dart';
+import '../../data/models/router_info.dart';
+import '../../../../core/network/mock_data_source.dart';
 
 class RouterProfileController extends GetxController {
-  RouterProfileController({
-    required this.repository,
-  });
-
-  final RouterProfileRepository repository;
-
-  RouterProfile? detectedProfile;
-  RouterProfile? cachedProfile;
-  bool isLoading = false;
+  final Rx<RouterInfo?> routerInfo = Rx<RouterInfo?>(null);
+  final RxBool isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadCachedProfile();
+    fetchRouterData();
   }
 
-  Future<void> loadCachedProfile() async {
-    cachedProfile = await repository.getCachedProfile();
-    update();
+  Future<void> fetchRouterData() async {
+    isLoading.value = true;
+    try {
+      await Future.delayed(const Duration(milliseconds: 600));
+      routerInfo.value = MockDataSource.routerInfo;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  Future<void> detectRouter() async {
-    isLoading = true;
-    update();
-    detectedProfile = await repository.detectRouter();
-    isLoading = false;
-    update();
-  }
-
-  Future<void> downloadProfile() async {
-    final model = detectedProfile?.model ?? cachedProfile?.model ?? 'Router';
-    isLoading = true;
-    update();
-    cachedProfile = await repository.downloadProfile(model);
-    isLoading = false;
-    update();
+  Future<void> restartRouter() async {
+    Get.defaultDialog(
+      title: 'Restart Router',
+      middleText: 'Are you sure you want to restart your router? Network will be down for 2 minutes.',
+      textConfirm: 'Restart',
+      textCancel: 'Cancel',
+      confirmTextColor: Get.theme.colorScheme.onPrimary,
+      buttonColor: Get.theme.colorScheme.error,
+      onConfirm: () {
+        Get.back();
+        Get.snackbar('Restarting', 'Router is rebooting...', snackPosition: SnackPosition.BOTTOM);
+      },
+    );
   }
 }

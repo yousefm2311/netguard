@@ -1,25 +1,44 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-class AppRoutes {
-  static const login = '/login';
-  static const dashboard = '/dashboard';
-  static const devices = '/devices';
-  static const deviceProfile = '/device-profile';
-  static const routerProfile = '/router-profile';
-  static const analytics = '/analytics';
-  static const activityLog = '/activity-log';
-  static const schedule = '/schedule';
-  static const guestAccess = '/guest-access';
-  static const securitySettings = '/security-settings';
-  static const networkLog = '/network-log';
-  static const helpCenter = '/help';
-  static const supportCenter = '/support';
-  static const settings = '/settings';
-}
+import 'app_routes.dart';
+import '../../features/main/presentation/views/main_view.dart';
+import '../../features/main/bindings/main_binding.dart';
+import '../../features/device_profile/presentation/views/device_profile_screen.dart';
+import '../../features/router_profile/presentation/views/router_profile_screen.dart';
 
 class AppPages {
-  static final pages = [
-    // We will populate this as we build features in subsequent phases
-    // GetPage(name: AppRoutes.login, page: () => const LoginScreen(), binding: AuthBinding()),
+  // Boot into the shell (Main Wrapper) so the Bottom Navigation Bar appears!
+  static const root = AppRoutes.shell;
+
+  static final List<GetPage> pages = [
+    GetPage(
+      name: AppRoutes.shell, 
+      page: () => const MainView(),
+      binding: MainBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.deviceProfile,
+      page: () => const DeviceProfileScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.routerProfile,
+      page: () => const RouterProfileScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.securitySettings, 
+      page: () => Scaffold(appBar: AppBar(), body: const Center(child: Text('Security Settings')))
+    ),
+    GetPage(
+      name: AppRoutes.guestAccess, 
+      page: () => Scaffold(appBar: AppBar(), body: const Center(child: Text('Guest Access')))
+    ),
+    GetPage(
+      name: AppRoutes.activityHistory, 
+      page: () => Scaffold(appBar: AppBar(), body: const Center(child: Text('Activity History')))
+    ),
+    GetPage(
+      name: AppRoutes.helpCenter, 
+      page: () => Scaffold(appBar: AppBar(), body: const Center(child: Text('Help Center')))
+    ),
   ];
 }

@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import '../features/settings/presentation/controllers/settings_controller.dart';
 import 'bindings/initial_binding.dart';
 import 'routes/app_pages.dart';
-import 'theme/app_theme.dart';
+import 'routes/app_pages.dart' as routes_file;
+import 'themes/app_theme.dart';
 import 'translations/app_translations.dart';
 
 class SmartNetControlApp extends StatelessWidget {
@@ -22,8 +23,8 @@ class SmartNetControlApp extends StatelessWidget {
           initialBinding: InitialBinding(),
           initialRoute: AppPages.root,
           getPages: AppPages.pages,
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
           themeMode: settingsController.themeMode,
           locale: settingsController.locale,
           fallbackLocale: const Locale('en'),

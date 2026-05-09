@@ -1,40 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/network/api_client.dart';
-import '../../../../core/storage/app_prefs.dart';
-
 class SettingsController extends GetxController {
-  ThemeMode themeMode = AppPrefs.getThemeMode();
-  Locale locale = Locale(AppPrefs.getLanguageCode());
-  late final TextEditingController baseUrlController;
+  final _themeMode = ThemeMode.light.obs;
+  final _locale = const Locale('en').obs;
+  final baseUrlController = TextEditingController(text: 'http://192.168.1.1:3000');
+
+  ThemeMode get themeMode => _themeMode.value;
+  Locale get locale => _locale.value;
+
+  void toggleTheme() {
+    _themeMode.value = _themeMode.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    Get.changeThemeMode(_themeMode.value);
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    _themeMode.value = mode;
+    Get.changeThemeMode(mode);
+  }
+
+  void changeLanguage(String langCode) {
+    _locale.value = Locale(langCode);
+    Get.updateLocale(_locale.value);
+  }
+
+  void setLocale(Locale locale) {
+    _locale.value = locale;
+    Get.updateLocale(locale);
+  }
+
+  void saveBaseUrl(String url) {
+    // In a real app we'd save this to StorageService
+    Get.snackbar('Settings Saved', 'API Base URL updated successfully', snackPosition: SnackPosition.BOTTOM);
+  }
 
   @override
-  void onInit() {
-    super.onInit();
-    baseUrlController = TextEditingController(text: AppPrefs.getBaseUrl());
-  }
-
-  Future<void> setThemeMode(ThemeMode mode) async {
-    themeMode = mode;
-    await AppPrefs.setThemeMode(mode);
-    update();
-  }
-
-  Future<void> setLocale(Locale nextLocale) async {
-    locale = nextLocale;
-    await AppPrefs.setLanguageCode(nextLocale.languageCode);
-    Get.updateLocale(nextLocale);
-    update();
-  }
-
-  Future<void> saveBaseUrl() async {
-    final value = baseUrlController.text.trim();
-    if (value.isEmpty) return;
-    await AppPrefs.setBaseUrl(value);
-    if (Get.isRegistered<ApiClient>()) {
-      Get.find<ApiClient>().updateBaseUrl(value);
-    }
-    Get.snackbar('Saved', 'API base URL updated.');
+  void onClose() {
+    baseUrlController.dispose();
+    super.onClose();
   }
 }

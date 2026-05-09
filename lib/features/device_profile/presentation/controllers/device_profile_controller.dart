@@ -1,39 +1,38 @@
 import 'package:get/get.dart';
-
-import '../../../activity_history/domain/entities/activity_event.dart';
-import '../../../activity_history/domain/repositories/activity_history_repository.dart';
-import '../../../devices/domain/entities/network_device.dart';
-import '../../../devices/domain/repositories/devices_repository.dart';
+import '../../../devices/data/models/device_model.dart';
+import '../../../../core/network/mock_data_source.dart';
 
 class DeviceProfileController extends GetxController {
-  DeviceProfileController({
-    required this.devicesRepository,
-    required this.activityRepository,
-  });
-
-  final DevicesRepository devicesRepository;
-  final ActivityHistoryRepository activityRepository;
-
-  NetworkDevice? device;
-  List<ActivityEvent> recentEvents = [];
-  bool isLoading = false;
+  final Rx<DeviceModel?> device = Rx<DeviceModel?>(null);
+  final RxBool isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    final arg = Get.arguments;
-    if (arg is NetworkDevice) {
-      device = arg;
-      load();
+    final deviceId = Get.arguments as String?;
+    if (deviceId != null) {
+      fetchDeviceDetails(deviceId);
     }
   }
 
-  Future<void> load() async {
-    if (device == null) return;
-    isLoading = true;
-    update();
-    recentEvents = await activityRepository.fetchEventsForDevice(device!.id);
-    isLoading = false;
-    update();
+  Future<void> fetchDeviceDetails(String id) async {
+    isLoading.value = true;
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+      device.value = MockDataSource.devices.firstWhere(
+        (d) => d.id == id,
+        orElse: () => MockDataSource.devices.first,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void blockDevice() {
+    Get.snackbar('Action Triggered', '${device.value?.name} has been blocked.', snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void limitSpeed() {
+    Get.snackbar('Action Triggered', 'Speed limits applied to ${device.value?.name}.', snackPosition: SnackPosition.BOTTOM);
   }
 }

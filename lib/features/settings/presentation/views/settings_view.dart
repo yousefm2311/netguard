@@ -100,7 +100,7 @@ class SettingsView extends GetView<SettingsController> {
                           ),
                           const SizedBox(height: 12),
                           FilledButton.tonal(
-                            onPressed: controller.saveBaseUrl,
+                            onPressed: () => controller.saveBaseUrl(controller.baseUrlController.text),
                             child: Text('save_api_settings'.tr),
                           ),
                         ],

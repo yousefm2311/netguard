@@ -32,4 +32,12 @@ class AppDimensions {
   static const double radiusLg = 16.0;
   static const double radiusXl = 20.0;
   static const double radiusFull = 100.0;
+
+  // Typography Sizes
+  static const double textXs = 12.0;
+  static const double textSm = 14.0;
+  static const double textBase = 16.0;
+  static const double textLg = 18.0;
+  static const double textXl = 20.0;
+  static const double text2Xl = 24.0;
 }

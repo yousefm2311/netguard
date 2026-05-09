@@ -12,12 +12,16 @@ class SmartNetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-          child: child,
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxWidth),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+              child: child,
+            ),
+          ),
         ),
       ),
     );
@@ -184,13 +188,14 @@ class SmartNetMetricCard extends StatelessWidget {
     return SmartNetPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // Hug content vertically
         children: [
           CircleAvatar(
             radius: 24,
             backgroundColor: theme.colorScheme.primaryContainer,
             child: Icon(icon, color: theme.colorScheme.primary),
           ),
-          const Spacer(),
+          const SizedBox(height: 16), // Replaced Spacer() to prevent unbounded height errors
           Text(title),
           const SizedBox(height: 6),
           Text(

@@ -1,17 +1,15 @@
 import 'package:get/get.dart';
-
-import '../../domain/entities/network_device.dart';
-import '../../domain/repositories/devices_repository.dart';
+import '../../data/models/device_model.dart';
+import '../../../../core/network/mock_data_source.dart';
 
 class DevicesController extends GetxController {
-  DevicesController({
-    required this.repository,
-  });
+  final RxList<DeviceModel> allDevices = <DeviceModel>[].obs;
+  final RxList<DeviceModel> filteredDevices = <DeviceModel>[].obs;
+  
+  final RxBool isLoading = true.obs;
+  final RxString currentFilter = 'All'.obs;
 
-  final DevicesRepository repository;
-
-  bool isLoading = false;
-  List<NetworkDevice> devices = [];
+  final List<String> filterOptions = ['All', 'Online', 'Limited', 'Blocked'];
 
   @override
   void onInit() {
@@ -20,38 +18,47 @@ class DevicesController extends GetxController {
   }
 
   Future<void> fetchDevices() async {
-    isLoading = true;
-    update();
-    devices = await repository.fetchDevices();
-    isLoading = false;
-    update();
+    isLoading.value = true;
+    try {
+      await Future.delayed(const Duration(milliseconds: 800));
+      allDevices.assignAll(MockDataSource.devices);
+      applyFilter(currentFilter.value);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  Future<void> blockDevice(NetworkDevice device) async {
-    await repository.blockDevice(device.id);
-    devices = devices
-        .map((item) => item.id == device.id ? item.copyWith(isBlocked: true) : item)
-        .toList();
-    update();
+  void applyFilter(String filter) {
+    currentFilter.value = filter;
+    if (filter == 'All') {
+      filteredDevices.assignAll(allDevices);
+    } else {
+      filteredDevices.assignAll(
+        allDevices.where((d) => d.status.toLowerCase() == filter.toLowerCase()).toList(),
+      );
+    }
   }
 
-  Future<void> limitSpeed(NetworkDevice device, int speed) async {
-    await repository.limitSpeed(device.id, speed);
-    devices = devices
-        .map(
-          (item) => item.id == device.id
-              ? item.copyWith(speedLimitMbps: speed)
-              : item,
-        )
-        .toList();
-    update();
+  Future<void> toggleDeviceStatus(String deviceId, bool isBlocked) async {
+    // Optimistic update
+    final index = allDevices.indexWhere((d) => d.id == deviceId);
+    if (index != -1) {
+      final device = allDevices[index];
+      allDevices[index] = device.copyWith(
+        status: isBlocked ? 'blocked' : 'online',
+        speedLimit: null, // Reset limit when unblocked
+      );
+      applyFilter(currentFilter.value);
+      
+      Get.snackbar(
+        'Success', 
+        isBlocked ? '${device.name} blocked.' : '${device.name} unblocked.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
-  Future<void> setQuota(NetworkDevice device, int quota) async {
-    await repository.setQuota(device.id, quota);
-    devices = devices
-        .map((item) => item.id == device.id ? item.copyWith(quotaGb: quota) : item)
-        .toList();
-    update();
+  Future<void> refreshData() async {
+    await fetchDevices();
   }
 }

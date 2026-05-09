@@ -66,7 +66,7 @@ class NgButton extends StatelessWidget {
             tapTargetSize: shrink ? MaterialTapTargetSize.shrinkWrap : null,
             padding: shrink ? const EdgeInsets.symmetric(horizontal: AppDimensions.s16) : null,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMd)),
-            side: const BorderSide(color: AppColors.primaryBlue),
+            side:  BorderSide(color: AppColors.primaryBlue),
             foregroundColor: AppColors.primaryBlue,
           ),
           child: buttonContent,
