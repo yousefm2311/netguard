@@ -1,17 +1,70 @@
-# netguard
+# NetGuard
 
-A new Flutter project.
+A Flutter application project prepared for a network and security-focused mobile experience.
+
+## Status
+
+Public portfolio candidate.
+
+## Features
+
+- Network-oriented app concept
+- Flutter mobile UI foundation
+- Extensible project structure
+- Ready for feature, security, and screenshot documentation
+
+## Tech Stack
+
+- Flutter
+- Dart
+
+## Project Structure
+
+```text
+.
+|-- lib/                # Flutter source code
+|-- assets/             # Images, icons, fonts, and static assets
+|-- test/               # Unit/widget tests when available
+|-- pubspec.yaml        # Flutter dependencies and assets
+|-- README.md           # Project documentation
+```
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+git clone https://github.com/yousefm2311/netguard.git
+cd netguard
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Environment Variables
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Create a local environment file only when the project requires external services.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```env
+API_BASE_URL=
+```
+
+Never commit real secrets, API keys, service-account files, or production credentials.
+
+## Screenshots
+
+Add mobile screenshots or GIFs before pinning this repository.
+
+```md
+![Home screen](docs/screenshots/home.png)
+```
+
+## Roadmap
+
+- Add screenshots and demo video
+- Document main user flows
+- Add setup notes for external services
+- Add tests or verification steps where applicable
+
+## Author
+
+Yousef Mohamed
+
+- GitHub: https://github.com/yousefm2311
